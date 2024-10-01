@@ -1,6 +1,6 @@
 # <h1 align="center">Palpite Loteria</h1>
 
-<p align="center">https://cosmeticosecia.vercel.app</p>
+<p align="center">https://palpiteloteria.vercel.app</p>
 
 <h2>Sobre</h2>
 <p>Se você gosta de jogar na loteria, mas fica sem ideias para números, seus problemas acabaram, chegou o Palpite Loteria, nele você pode gerar palpites aleatório e armazena-los para conferir mais tarde. Jogue com moderação.</p>
