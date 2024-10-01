@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@700&family=Inter:wght@400;700&display=swap"
+        rel="stylesheet">
+    <title>Palpite Loteria</title>
+    <style>
+        body {
+            background-color: rgb(138, 233, 233);
+            text-align: center;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+        }
+
+        .container__conteudo {
+            align-items: center;
+        }
+
+        .container {
+            margin-top: 140px;
+            align-items: center;
+        }
+
+        .container__campo {
+            margin: 25px 0;
+        }
+
+        .container__texto {
+            margin-top: 20px;
+        }
+
+        .container__input {
+            width: 30px;
+            height: 20px;
+        }
+
+        .container__opcao {
+            display: none;
+            justify-content: center;
+        }
+
+        .texto__paragrafo {
+            margin-left: 30px;
+        }
+
+        .container__botao {
+            margin-left: 10px;
+            height: 30px;
+        }
+
+        .conteudo-sorteio {
+            display: none;
+        }
+
+        .texto__paragrafo-erro {
+            margin-top: 20px;
+            color: red;
+        }
+
+        .divide {
+            margin-left: 50px;
+            margin-bottom: 50px;
+            justify-content: center;
+            display: flex;
+        }
+
+        .container__palpites {
+            display: none;
+        }
+
+        .guarda__palpite {
+            margin-left: 50px;
+            display: block;
+        }
+
+        .guarda__palpite-respo {
+            display: flex;
+            justify-content: space-between;
+            border: 2px solid;
+            padding: 4px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+
+        .respo__palpite {
+            margin: 5px 10px 0px 10px;
+        }
+
+        .rodape_link {
+        text-decoration: none;
+        font-size: 18px;
+      }
+
+      .aviso {
+        margin-top: 100px;
+        margin-bottom: 50px;
+        align-items: center; 
+        color: red;
+        font-size: 14px;
+      }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="divide">
+            <div class="container__conteudo">
+                <div class="container__informacoes">
+                    <div class="container__texto">
+                        <h1><span class="container__texto-titulo">Palpite Loteria</span></h1>
+
+                        <div class="container__campo">
+                            <label class="texto__paragrafo">Escolha o tipo de loteria para um palpite:</label>
+                        </div>
+
+                        
+
+                        <div class="container__botoes">
+                            <button onclick="tipo(true, false, 6, 1, 60)" id="btn-sortear"
+                                class="container__botao">Mega-Sena</button>
+                            <button onclick="tipo(true, false, 5, 1, 80)" id="btn-reiniciar"
+                                class="container__botao">Quina</button>
+                            <button onclick="tipo(true, true, 2, 1, 2)" id="btn-reiniciar"
+                                class="container__botao">Outras</button>
+                        </div>
+
+                        <div class="texto__paragrafo-erro">
+                            <label id="erro"></label>
+                        </div>
+
+                        <div class="conteudo-sorteio">
+                            <div class="container__campo">
+                                <label class="texto__paragrafo">Escolha a quantidade de números na aposta</label>
+                                <input class="container__input" id="quantidade" type="number" min="1">
+                            </div>
+                            <div class="container__opcao">
+                                <div class="container__campo">
+                                    <label class="texto__paragrafo">Do número</label>
+                                    <input class="container__input" id="de" type="number" min="1">
+                                </div>
+
+                                <div class="container__campo">
+                                    <label class="texto__paragrafo">Até o número</label>
+                                    <input class="container__input" id="ate" type="number" min="2">
+                                </div>
+                            </div>
+
+                            <div class="container__botoes">
+                                <button onclick="sortear()" id="btn-sortear" class="container__botao">Sortear</button>
+                            </div>
+
+                            <div class="container__texto" id="resultado">
+                                <label class="texto__paragrafo" id="respo"> </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container__palpites">
+                <div class="guarda__palpite">
+                    <label class="texto__paragrafo-respo">Últimos Palpites:</label><br><br>
+                    <div id="respoPalpite"></div>
+                    <button onclick="limpar()" class="container__botao">Limpar Todas</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="aviso">
+        <label >Atenção: Este programa produz números de forma aleatória gerados por um algorítimo do sistema,<br>
+             não me responsabilizo por eventuais prejuízos derivados do uso dele. <br>Mas se por acaso acertares algum
+              palpite e quiseres recompensar este humilde desenvolvedor,<br> segue <strong>chave pix  Cel: 54999742403 </strong> Nome: Carlos Alexandre da Motta.
+            </label>
+            </div>
+                    <p><a class="rodape_link" href="http://mhps.com.br"  target="_blank" id="denv">Desenvolvido por MHPS</a></p>
+
+    </footer>
+
+    <script>
+        
+        let historico = JSON.parse(localStorage.getItem('sorteios'))|| [];
+
+        if (historico.length != []) {
+            document.querySelector('.container__palpites').style.display = 'block';
+        } else {
+            document.querySelector('.container__palpites').style.display = 'none';
+        }
+
+
+        function tipo(stats, statsS, num, de, ate) {
+            document.getElementById('respo').innerHTML = '';
+            document.getElementById('erro').innerHTML = '';
+            document.querySelector('.conteudo-sorteio').style.display = stats ? 'block' : 'none';
+            document.querySelector('.container__opcao').style.display = statsS ? 'block' : 'none';
+            document.getElementById('quantidade').value = num;
+            document.getElementById('de').value = de;
+            document.getElementById('ate').value = ate;
+        }
+
+        function sortear() {
+            document.getElementById('erro').innerHTML = '';
+            let quantidade = parseInt(document.getElementById('quantidade').value);
+            let de = parseInt(document.getElementById('de').value);
+            let ate = parseInt(document.getElementById('ate').value);
+
+            if (!quantidade || !de || !ate || quantidade <= 0 || de <= 0 || ate <= 0 || de >= ate) {
+                document.getElementById('erro').innerHTML = `A quantidade do número final deve ser maior que a inicial`;
+            } else {
+                document.querySelector('.container__palpites').style.display = 'block';
+
+                let sorteados = [];
+                let numero;
+
+                for (let i = 0; i < quantidade; i++) {
+                    numero = sortearNum(de, ate);
+
+                    while (sorteados.includes(numero)) {
+                        numero = sortearNum(de, ate);
+                    }
+                    sorteados.push(numero);
+                }
+
+                document.getElementById('respo').innerHTML = `Palpite: <strong>${sorteados.join('&nbsp;&nbsp;')}</strong> <button onclick="copiar('${sorteados.join(' ')}')" class="container__botao">Copiar</button>`;
+
+
+                historico.unshift(sorteados.join(' '));
+
+                if (historico.length > 10) {
+                    historico.pop();
+                }
+
+                localStorage.setItem('sorteios', JSON.stringify(historico));
+
+                exibirUltimosSorteios(historico);
+            }
+        }
+
+        function copiar(texto) {
+            navigator.clipboard.writeText(texto).then(() => {
+                document.getElementById('erro').innerHTML = `O numero <strong>${texto}</strong> foi copiado com sucesso`;
+            });
+        }
+
+        function sortearNum(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function exibirUltimosSorteios(historico) {
+            const respoPalpite = document.getElementById('respoPalpite');
+            respoPalpite.innerHTML = '';
+
+            historico.forEach(palpite => {
+                respoPalpite.innerHTML += `<div class="guarda__palpite-respo">
+                    <button onclick="copiar('${palpite}')" class="container__botao">Copiar</button><label class="respo__palpite">${palpite}</label>
+                </div>`;
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            let historico = JSON.parse(localStorage.getItem('sorteios')) || [];
+            exibirUltimosSorteios(historico);
+        });
+
+        function limpar() {
+            localStorage.removeItem('sorteios');
+            exibirUltimosSorteios([]);
+            document.querySelector('.container__palpites').style.display = 'none';
+            location.reload();
+        }
+
+    </script>
+</body>
+
+</html>
